@@ -1,4 +1,8 @@
+from datetime import datetime
+
 import psutil
+import ujson
+from fastapi.responses import UJSONResponse
 
 from fastapi import APIRouter
 
@@ -8,7 +12,7 @@ router = APIRouter()
 @router.get("/")
 async def health_check():
     # Server Uptime
-    uptime = psutil.boot_time()
+    uptime = datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
 
     # Memory Usage
     memory = psutil.virtual_memory()
@@ -36,4 +40,4 @@ async def health_check():
         "cpu_percent": cpu_percent,
         "network": network_info,
     }
-    return server_info
+    return UJSONResponse(server_info)
